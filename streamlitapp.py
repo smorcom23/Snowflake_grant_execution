@@ -1,15 +1,15 @@
-import streamlit as st
 import snowflake.connector
 import os
+import streamlit as st
 
 def execute_procedure(db_name, role_name):
     # Read Snowflake connection information from GitHub secrets
     snowflake_config = {
-        "user": st.secrets["SNOWFLAKE_USER"],
-        "password": st.secrets["SNOWFLAKE_PASSWORD"],
-        "account": st.secrets["SNOWFLAKE_ACCOUNT"],
-        "database": st.secrets["SNOWFLAKE_DATABASE"],
-        "schema": st.secrets["SNOWFLAKE_SCHEMA"]
+        "user": os.environ["SNOWFLAKE_USER"],
+        "password": os.environ["SNOWFLAKE_PASSWORD"],
+        "account": os.environ["SNOWFLAKE_ACCOUNT"],
+        "database": os.environ["SNOWFLAKE_DATABASE"],
+        "schema": os.environ["SNOWFLAKE_SCHEMA"]
     }
 
     # Create a Snowflake connection
