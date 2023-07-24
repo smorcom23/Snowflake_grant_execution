@@ -11,7 +11,7 @@ def execute_procedure(db_name, role_name):
         "database": os.environ.get("SNOWFLAKE_DATABASE"),
         "schema": os.environ.get("SNOWFLAKE_SCHEMA")
     }
-    print(user)
+    print(snowflake_config["user"])
     # Create a Snowflake connection
     conn = snowflake.connector.connect(
         user=snowflake_config["user"],
