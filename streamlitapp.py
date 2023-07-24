@@ -3,13 +3,13 @@ import snowflake.connector
 import os
 
 def execute_procedure(db_name, role_name):
-    # Read Snowflake connection information from GitHub secrets
+    # Read Snowflake connection information from the environment variables
     snowflake_config = {
-        "user": os.environ["USER"],
-        "password": os.environ["PASSWORD"],
-        "account": os.environ["ACCOUNT"],
-        "database": os.environ["DATABASE"],
-        "schema": os.environ["SCHEMA"]
+        "user": os.environ.get("SNOWFLAKE_USER"),
+        "password": os.environ.get("SNOWFLAKE_PASSWORD"),
+        "account": os.environ.get("SNOWFLAKE_ACCOUNT"),
+        "database": os.environ.get("SNOWFLAKE_DATABASE"),
+        "schema": os.environ.get("SNOWFLAKE_SCHEMA")
     }
 
     # Create a Snowflake connection
