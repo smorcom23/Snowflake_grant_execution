@@ -1,6 +1,8 @@
 name: python
 
-on: push
+on: 
+
+  workflow_dispatch:
 
 env:
          SNOWFLAKE_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
