@@ -6,7 +6,8 @@ SNOWFLAKE_USER = os.environ["SNOWFLAKE_USER"]
 SNOWFLAKE_PASSWORD = os.environ["SNOWFLAKE_PASSWORD"]
 SNOWFLAKE_DATABASE = os.environ["SNOWFLAKE_DATABASE"]
 SNOWFLAKE_ACCOUNT = os.environ["SNOWFLAKE_ACCOUNT"]
-
+#SNOWFLAKE_WAREHOUSE = os.environ["SNOWFLAKE_WAREHOUSE"]
+#SNOWFLAKE_SCHEMA = os.environ["SNOWFLAKE_SCHEMA"]
 
 def check_role_existence(conn, role_name):
     cursor = conn.cursor()
@@ -20,13 +21,14 @@ def check_role_existence(conn, role_name):
 
 def execute_procedure(db_name, role_name):
     # Create a Snowflake connection
-   conn = snowflake.connector.connect(
+    conn = snowflake.connector.connect(
         user=SNOWFLAKE_USER,
         password=SNOWFLAKE_PASSWORD,
         account=SNOWFLAKE_ACCOUNT,
+#        warehouse=SNOWFLAKE_WAREHOUSE,
         database=SNOWFLAKE_DATABASE
+ #       schema=SNOWFLAKE_SCHEMA
     )
-
 
     # Check if the role exists with securityadmin role
     role_exists = check_role_existence(conn, role_name)
