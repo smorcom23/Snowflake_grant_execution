@@ -15,10 +15,13 @@ jobs:
   run-python:
     runs-on: ubuntu-latest
     steps:
-    - name: Set up Python
+    - name: Check out Python
       uses: actions/checkout@v3
+      
+    - name: Set up Python
+      uses: actions/setup-python@v3
       with:
-        python-version: '3.8'
+        python-version: '3.8.17'
     - name: Run Python
       run:
          pip install -r requirements.txt
