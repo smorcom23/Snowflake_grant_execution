@@ -1,32 +1,33 @@
-name: python
+name: Snowflake Procedure Execution
 
-on: 
-
-  workflow_dispatch:
-
-env:
-         SNOWFLAKE_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
-         SNOWFLAKE_USER: ${{ secrets.SNOWFLAKE_USER }}
-         SNOWFLAKE_PASSWORD: ${{ secrets.SNOWFLAKE_PASSWORD }}
-         SNOWFLAKE_DATABASE: ${{ secrets.SNOWFLAKE_DATABASE }}
-  
+on:
+  push:
+    branches:
+      - main
 
 jobs:
-  run-python:
+  execute_procedure:
     runs-on: ubuntu-latest
+
     steps:
-    - name: Check out Python
-      uses: actions/checkout@v3
-      
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.8.17'
-        
-#    - name: Run Python
-#      run:
-#         pip install --upgrade pip
-#         pip install -r requirements.txt
-#         python streamlitapp.py
-     
-    
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Set Up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.9'
+
+      - name: Install Dependencies
+        run: pip install --upgrade pip
+             pip install snowflake-connector-python streamlit
+
+      - name: Execute Procedure
+        env:
+          SNOWFLAKE_USER: ${{ secrets.SNOWFLAKE_USER }}
+          SNOWFLAKE_PASSWORD: ${{ secrets.SNOWFLAKE_PASSWORD }}
+          SNOWFLAKE_DATABASE: ${{ secrets.SNOWFLAKE_DATABASE }}
+          SNOWFLAKE_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
+          SNOWFLAKE_WAREHOUSE: ${{ secrets.SNOWFLAKE_WAREHOUSE }}
+          SNOWFLAKE_SCHEMA: ${{ secrets.SNOWFLAKE_SCHEMA }}
+        run: python your_script_name.py
