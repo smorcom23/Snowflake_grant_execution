@@ -25,7 +25,7 @@ jobs:
         
     - name: Run Python
       run:
-         pip install -r requirements.txt
+         pip3 install -r requirements.txt
          python streamlitapp.py
      
     
