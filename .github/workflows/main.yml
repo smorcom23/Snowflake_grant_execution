@@ -18,7 +18,7 @@ jobs:
     - name: Set up Python
       uses: actions/checkout@v3
       with:
-        python-version: '3.8.17'
+        python-version: '3.8'
     - name: Run Python
       run:
          pip install -r requirements.txt
