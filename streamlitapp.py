@@ -1,5 +1,12 @@
 import streamlit as st
 import snowflake.connector
+import os
+
+SNOWFLAKE_USER = os.environ["SNOWFLAKE_USER"]
+SNOWFLAKE_PASSWORD = os.environ["SNOWFLAKE_PASSWORD"]
+SNOWFLAKE_DATABASE = os.environ["SNOWFLAKE_DATABASE"]
+SNOWFLAKE_ACCOUNT = os.environ["SNOWFLAKE_ACCOUNT"]
+
 
 def check_role_existence(conn, role_name):
     cursor = conn.cursor()
@@ -12,18 +19,14 @@ def check_role_existence(conn, role_name):
         cursor.close()
 
 def execute_procedure(db_name, role_name):
-    # Read Snowflake connection information from Streamlit secrets
-    snowflake_config = st.secrets["snowflake"]
-
     # Create a Snowflake connection
-    conn = snowflake.connector.connect(
-        user=snowflake_config["snowflake_user"],
-        password=snowflake_config["snowflake_password"],
-        account=snowflake_config["snowflake_account"],
-        warehouse=snowflake_config["snowflake_warehouse"],
-        database=snowflake_config["snowflake_database"],
-        schema=snowflake_config["snowflake_schema"]
+   conn = snowflake.connector.connect(
+        user=SNOWFLAKE_USER,
+        password=SNOWFLAKE_PASSWORD,
+        account=SNOWFLAKE_ACCOUNT,
+        database=SNOWFLAKE_DATABASE
     )
+
 
     # Check if the role exists with securityadmin role
     role_exists = check_role_existence(conn, role_name)
