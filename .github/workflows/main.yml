@@ -23,10 +23,10 @@ jobs:
       with:
         python-version: '3.8.17'
         
-    - name: Run Python
-      run:
-         pip install --upgrade pip
-         pip install -r requirements.txt
-         python streamlitapp.py
+#    - name: Run Python
+#      run:
+#         pip install --upgrade pip
+#         pip install -r requirements.txt
+#         python streamlitapp.py
      
     
