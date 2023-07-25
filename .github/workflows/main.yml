@@ -2,20 +2,24 @@ name: python
 
 on: push
 
-jobs:
-  test_env:
-    environment: TEST_SECRET
-    runs-on: ubuntu-latest
-    steps:
-    - name: Set up Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: 3.9
-    - name: Snowflake Set Password
-      run:  python -c 'import os;print(os.environ)'
-      env:
+env:
          SNOWFLAKE_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
          SNOWFLAKE_USER: ${{ secrets.SNOWFLAKE_USER }}
          SNOWFLAKE_PASSWORD: ${{ secrets.SNOWFLAKE_PASSWORD }}
          SNOWFLAKE_DATABASE: ${{ secrets.SNOWFLAKE_DATABASE }}
+  
+
+jobs:
+  run-python:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Set up Python
+      uses: actions/checkout@v3
+      with:
+        python-version: '3.8.17'
+    - name: Run Python
+      run:
+         pip install requirements.txt
+         python streamlitapp.py
+     
     
