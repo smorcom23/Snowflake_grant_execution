@@ -21,7 +21,7 @@ jobs:
         python-version: '3.8.17'
     - name: Run Python
       run:
-         pip install requirements.txt
+         pip install -r requirements.txt
          python streamlitapp.py
      
     
