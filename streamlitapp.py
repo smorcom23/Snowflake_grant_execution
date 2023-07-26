@@ -3,11 +3,11 @@ import snowflake.connector
 from cryptography.fernet import Fernet
 
 # Read the encryption key from the secure location
-with open("encryption_key.txt", "rb") as file:
+with open(".gitignore/encryption_key.txt", "rb") as file:
     encryption_key = file.read()
 
 # Decrypt the configuration file
-with open("encrypted_config.txt", "rb") as file:
+with open(".gitignore/encrypted_config.txt", "rb") as file:
     encrypted_data = file.read()
 
 cipher_suite = Fernet(encryption_key)
