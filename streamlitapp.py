@@ -1,30 +1,69 @@
 import streamlit as st
 import snowflake.connector
-import os
+from cryptography.fernet import Fernet
+
+# Read the encryption key from the secure location
+with open("encryption_key.txt", "rb") as file:
+    encryption_key = file.read()
+
+# Decrypt the configuration file
+with open("encrypted_config.txt", "rb") as file:
+    encrypted_data = file.read()
+
+cipher_suite = Fernet(encryption_key)
+decrypted_data = cipher_suite.decrypt(encrypted_data)
+config_data = decrypted_data.decode()
+
+# Parse the configuration data
+snowflake_config = {}
+for line in config_data.strip().split("\n"):
+    key, value = line.split("=")
+    snowflake_config[key.strip()] = value.strip()
+
+def check_role_existence(conn, role_name):
+    try:
+        # Check if the Snowflake connection is active
+        cursor = conn.cursor()
+        # Check if the role exists with securityadmin role
+        cursor.execute("USE ROLE securityadmin")
+        cursor.execute(f"SHOW ROLES LIKE '{role_name}'")
+        role_exists = len(cursor.fetchall()) > 0
+
+        if role_exists:
+            print(f"Role '{role_name}' exists.")
+        else:
+            print(f"Role '{role_name}' does not exist.")
+
+        cursor.close()
+        return role_exists
+    except snowflake.connector.errors.OperationalError as e:
+        st.error(f"Error occurred while checking role existence: {str(e)}")
+        return False
 
 def execute_procedure(db_name, role_name):
-    # Read Snowflake connection information from the environment variables
-    snowflake_config = {
-        "user": os.environ.get("SNOWFLAKE_USER"),
-        "password": os.environ.get("SNOWFLAKE_PASSWORD"),
-        "account": os.environ.get("SNOWFLAKE_ACCOUNT"),
-        "database": os.environ.get("SNOWFLAKE_DATABASE"),
-        "schema": os.environ.get("SNOWFLAKE_SCHEMA")
-    }
-
     # Create a Snowflake connection
     conn = snowflake.connector.connect(
-        user=snowflake_config["user"],
-        password=snowflake_config["password"],
-        account=snowflake_config["account"],
-        database=snowflake_config["database"],
-        schema=snowflake_config["schema"]
+        user=snowflake_config["SNOWFLAKE_USER"],
+        password=snowflake_config["SNOWFLAKE_PASSWORD"],
+        account=snowflake_config["SNOWFLAKE_ACCOUNT"],
+        database=snowflake_config["SNOWFLAKE_DATABASE"],
+        schema=snowflake_config["SNOWFLAKE_SCHEMA"]
     )
+
+    role_exists = check_role_existence(conn, role_name)
+
+    if not role_exists:
+        st.error(f"The role '{role_name}' does not exist.")
+        conn.close()
+        return
 
     # Create a Snowflake cursor
     cursor = conn.cursor()
 
     try:
+        # Switch to sysadmin role
+        cursor.execute("USE ROLE sysadmin")
+
         # Call the procedure with provided parameters using array_construct
         cursor.execute(f"CALL ag_admin_db.public.create_lsra_db_crud(array_construct('{db_name}'), array_construct('{role_name}'))")
         st.success(f"Procedure executed successfully with Database: {db_name}, Role: {role_name}")
